@@ -32,8 +32,8 @@ source .venv/bin/activate
 
 ```mermaid
 classDiagram
-Class01 <|-- AveryLongClass : Cool
-Class03 *-- Class04
+report <|-- AveryLongClass : Cool
+activity *-- Class04
 Class05 o-- Class06
 Class07 .. Class08
 Class09 --> C2 : Where am i?
@@ -41,8 +41,24 @@ Class09 --* C3
 Class09 --|> Class07
 Class07 : equals()
 Class07 : Object[] elementData
-Class01 : size()
-Class01 : int chimp
-Class01 : int gorilla
+report : size()
+report : int chimp
+report : int gorilla
 Class08 <--> C2: Cool label
+```
+
+```mermaid
+erDiagram
+CAR ||--o{ NAMED-DRIVER : allows
+CAR {
+    string registrationNumber
+    string make
+    string model
+}
+PERSON ||--o{ NAMED-DRIVER : is
+PERSON {
+    string firstName
+    string lastName
+    int age
+}
 ```
