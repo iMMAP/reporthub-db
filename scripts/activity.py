@@ -1,33 +1,29 @@
 from pymongo import MongoClient
 from pprint import pprint
-import sqlite3
+from collections import namedtuple
 import pandas as pd
-from bson.objectid import ObjectId
 
 
-con = sqlite3.connect(":memory:")
+# defining activity data model
+Activity = namedtuple(
+    "Activity", 
+    "cluster activity_type_id activity_type_name"
+)
 
-con.execute("CREATE TABLE act (cluster,name,description,created_at);")
 
+# connecting to mongodb and fetching all activities from DB
 client = MongoClient()
-
 db = client.ngmHealthCluster
-
 collection = db.activities
-#collection = db.project
+db_activities = collection.find()
 
-sss = collection.find()
 
-for project in sss:
-    if isinstance(project['activity_type'], list):
-        ats = project['activity_type']
-        for at in ats:
-            if isinstance(at, dict):
-                con.execute("""
-                INSERT INTO act VALUES (?, ?, ?, ?)
-                    """, [
-                        at['cluster'],
-                        at['activity_type_id'],
-                        at['activity_type_name'],
-                        project['createdAt']
-                    ])
+# a set of all activities fetched from DB
+all_activities = set()
+
+for ac in db_activities:
+    activity = Activity(ac['cluster'], ac['activity_type_id'], ac['activity_type_name'])
+    all_activities.add(activity)
+
+# this dataframe contains all unique activities from database
+df = pd.DataFrame(all_activities)
